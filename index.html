@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animated Creative Portfolio</title>
+    <style>
+        :root {
+            --bg-color: #0a0a12;
+            --text-color: #ffffff;
+            --accent-color: #7000ff;
+            --accent-glow: #00f0ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            overflow-y: scroll;
+        }
+
+        /* Ambient Background Grid & Glow */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+        }
+
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            top: -10%;
+            right: -10%;
+            z-index: -1;
+            animation: floatGlow 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-100px, 50px) scale(1.2); }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 10%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 18, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, var(--text-color), var(--accent-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s, transform 0.3s;
+            display: inline-block;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 0 10%;
+            position: relative;
+            margin-top: 60px;
+        }
+
+        .reveal-text {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: revealUp 1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            align-self: flex-start;
+            padding: 16px 35px;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(112, 0, 255, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: revealUp 1s cubic-bezier(0.22, 1, 0.36, 1) 0.4s forwards;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            background: #8224ff;
+            box-shadow: 0 15px 40px rgba(112, 0, 255, 0.5), 0 0 15px var(--accent-glow);
+        }
+
+        @keyframes revealUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Portfolio / Showreel Grid Section */
+        .portfolio-section {
+            padding: 100px 10%;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent-glow);
+            border-radius: 2px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 40px;
+        }
+
+        /* Scroll Animation Target */
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease, border-color 0.3s;
+            
+            /* Hidden state for Scroll Trigger */
+            opacity: 0;
+            transform: translateY(60px);
+        }
+
+        /* Active Scroll Class applied by JS */
+        .card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-image-wrapper {
+            width: 100%;
+            height: 240px;
+            background: linear-gradient(135deg, #1e1e30 0%, #0f0f1a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Abstract CSS Graphic Placeholder inside card */
+        .card-graphic {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--accent-color), var(--accent-glow));
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-graphic {
+            transform: translate(-50%, -50%) rotate(180deg) scale(1.1);
+        }
+
+        .card-info {
+            padding: 25px;
+            background: rgba(15, 15, 26, 0.5);
+        }
+
+        .card-category {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-glow);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.5;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 100px 10%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .about-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent-glow);
+            border-radius: 2px;
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .about-graphic {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(112, 0, 255, 0.1) 0%, rgba(0, 240, 255, 0.1) 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-graphic::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(112, 0, 255, 0.3) 0%, transparent 70%);
+            top: 20%;
+            left: 10%;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .about-graphic::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.3) 0%, transparent 70%);
+            bottom: 20%;
+            right: 10%;
+            animation: pulse 3s ease-in-out infinite 0.5s;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 10%;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+        }
+
+        .footer-content {
+            margin-bottom: 30px;
+        }
+
+        .footer-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-glow);
+        }
+
+        .footer-bottom {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .reveal-text {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-section {
+                grid-template-columns: 1fr;
+                padding: 60px 5%;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 5%;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Dynamic Background Aesthetics -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <!-- Navigation Header -->
+    <nav>
+        <div class="logo">CREATIVE.IO</div>
+        <ul class="nav-links">
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Hero Landing -->
+    <section class="hero">
+        <h1 class="reveal-text">We build digital<br><span>experiences</span> that matter.</h1>
+        <p>A minimalist design hub blending raw performance metrics with immersive, high-end user interface aesthetics.</p>
+        <a href="#work" class="cta-btn">Explore Showreel</a>
+    </section>
+
+    <!-- Interactive Portfolio Section -->
+    <section class="portfolio-section" id="work">
+        <h2 class="section-title">Selected Works</h2>
+        
+        <div class="grid">
+            <!-- Project Card 1 -->
+            <div class="card">
+                <div class="card-image-wrapper">
+                    <div class="card-graphic" style="border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;"></div>
+                </div>
+                <div class="card-info">
+                    <div class="card-category">Web3 Development</div>
+                    <div class="card-title">Hyperion Protocol</div>
+                    <div class="card-desc">An ultra-secure, decentralized architecture engine powering micro-transactions and next-gen nodes.</div>
+                </div>
+            </div>
+
+            <!-- Project Card 2 -->
+            <div class="card">
+                <div class="card-image-wrapper">
+                    <div class="card-graphic" style="border-radius: 50% 50% 20% 80% / 40% 40% 60% 60%;"></div>
+                </div>
+                <div class="card-info">
+                    <div class="card-category">UI/UX Design</div>
+                    <div class="card-title">Nexus Dashboard</div>
+                    <div class="card-desc">Premium analytics platform with real-time data visualization and predictive insights.</div>
+                </div>
+            </div>
+
+            <!-- Project Card 3 -->
+            <div class="card">
+                <div class="card-image-wrapper">
+                    <div class="card-graphic" style="border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;"></div>
+                </div>
+                <div class="card-info">
+                    <div class="card-category">Brand Identity</div>
+                    <div class="card-title">Luminix Rebrand</div>
+                    <div class="card-desc">Complete visual overhaul including logo, typography, and comprehensive design system.</div>
+                </div>
+            </div>
+
+            <!-- Project Card 4 -->
+            <div class="card">
+                <div class="card-image-wrapper">
+                    <div class="card-graphic" style="border-radius: 70% 30% 66% 34% / 33% 66% 34% 67%;"></div>
+                </div>
+                <div class="card-info">
+                    <div class="card-category">Mobile App</div>
+                    <div class="card-title">MotionFlow</div>
+                    <div class="card-desc">Intuitive fitness tracking app with AI-powered workout recommendations and social features.</div>
+                </div>
+            </div>
+
+            <!-- Project Card 5 -->
+            <div class="card">
+                <div class="card-image-wrapper">
+                    <div class="card-graphic" style="border-radius: 20% 80% 50% 50% / 50% 50% 50% 50%;"></div>
+                </div>
+                <div class="card-info">
+                    <div class="card-category">E-Commerce</div>
+                    <div class="card-title">VortexShop</div>
+                    <div class="card-desc">Next-generation shopping platform with AR product previews and voice commerce integration.</div>
+                </div>
+            </div>
+
+            <!-- Project Card 6 -->
+            <div class="card">
+                <div class="card-image-wrapper">
+                    <div class="card-graphic" style="border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;"></div>
+                </div>
+                <div class="card-info">
+                    <div class="card-category">SaaS Platform</div>
+                    <div class="card-title">CloudSync Pro</div>
+                    <div class="card-desc">Enterprise-grade collaboration tool with real-time synchronization and advanced security features.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="about-content">
+            <h2>About Our Studio</h2>
+            <p>We're a team of passionate designers, developers, and strategists dedicated to creating digital experiences that push boundaries and inspire innovation.</p>
+            <p>With over a decade of combined experience, we've partnered with Fortune 500 companies and innovative startups to deliver solutions that blend aesthetic excellence with functional precision.</p>
+            <p>Our approach combines data-driven insights with creative storytelling to create digital products that resonate with audiences and drive measurable results.</p>
+        </div>
+        <div class="about-graphic"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="footer-content">
+            <h3>Let's Create Something Amazing</h3>
+            <p style="color: rgba(255, 255, 255, 0.6);">Get in touch with us for your next project</p>
+        </div>
+        <div class="footer-links">
+            <a href="mailto:hello@creative.io">Email</a>
+            <a href="#">Twitter</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">Instagram</a>
+            <a href="#">Dribbble</a>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 CREATIVE.IO - All rights reserved. Crafted with passion and precision.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Animation - Reveal cards as they come into view
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards
+        document.querySelectorAll('.card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Smooth scroll behavior for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href !== '#' && document.querySelector(href)) {
+                    e.preventDefault();
+                    document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect on scroll for background glow
+        window.addEventListener('scroll', () => {
+            const bgGlow = document.querySelector('.bg-glow');
+            const scrolled = window.pageYOffset;
+            bgGlow.style.transform = `translate(${-scrolled * 0.1}px, ${scrolled * 0.05}px) scale(1.2)`;
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.background = 'rgba(10, 10, 18, 0.95)';
+                nav.style.borderBottom = '1px solid rgba(255, 255, 255, 0.1)';
+            } else {
+                nav.style.background = 'rgba(10, 10, 18, 0.8)';
+                nav.style.borderBottom = '1px solid rgba(255, 255, 255, 0.05)';
+            }
+        });
+    </script>
+
+</body>
+</html>
